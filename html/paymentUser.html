@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pagos de Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/css/paymentUser.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+   <!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">Sistema de Gestión</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- Gestión de Usuarios -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="usuariosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Usuarios
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="usuariosDropdown">
+                        <li><a class="dropdown-item" href="user.html">Usuarios</a></li>
+                        <li><a class="dropdown-item" href="person.html">Personas</a></li>
+                        <li><a class="dropdown-item" href="userNotification.html">Notificaciones</a></li>
+                        <li><a class="dropdown-item" href="accessLog.html">Registro de Acceso</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Roles -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Roles
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="rolesDropdown">
+                        <li><a class="dropdown-item" href="rol.html">Roles</a></li>
+                        <li><a class="dropdown-item" href="rolUser.html">Asignación de Roles</a></li>
+                        <li><a class="dropdown-item" href="permission.html">Permisos</a></li>
+                        <li><a class="dropdown-item" href="roleFormPermission.html">Permisos de Formularios</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Módulos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="modulosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Módulos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="modulosDropdown">
+                        <li><a class="dropdown-item" href="module.html">Módulos</a></li>
+                        <li><a class="dropdown-item" href="moduleForm.html">Formularios de Módulos</a></li>
+                        <li><a class="dropdown-item" href="form.html">Formularios</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Infracciones -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="infraccionesDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Infracciones
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="infraccionesDropdown">
+                        <li><a class="dropdown-item" href="typeinfraction.html">Tipos de Infracciones</a></li>
+                        <li><a class="dropdown-item" href="stateInfraction.html">Estados de Infracción</a></li>
+                        <li><a class="dropdown-item" href="InformationInfraction.html">Información de Infracciones</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Pagos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="pagosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Pagos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="pagosDropdown">
+                        <li><a class="dropdown-item" href="PaymentHistory.html">Historial de Pagos</a></li>
+                        <li><a class="dropdown-item" href="paymentAgreement.html">Acuerdos de Pago</a></li>
+                        <li><a class="dropdown-item" href="paymentUser.html">Pagos de Usuarios</a></li>
+                        <li><a class="dropdown-item" href="typePayment.html">Tipos de Pago</a></li>
+                        <li><a class="dropdown-item" href="bill.html">Facturas</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="container">
+        <h1 class="mb-4">Gestión de Pagos de Usuarios</h1>
+        
+        <!-- Área de mensajes de estado -->
+        <div id="statusMessage" style="display:none;"></div>
+        
+        <!-- Tabla de pagos -->
+        <div class="card mb-5">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Lista de Pagos</h3>
+                <button class="btn btn-primary" id="addPaymentBtn">
+                    <i class="fas fa-plus-circle"></i> Nuevo Pago
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Persona</th>
+                                <th>Monto</th>
+                                <th>Fecha de Pago</th>
+                                <th>Tipo de Pago</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentTableBody">
+                            <!-- Los datos de los pagos se insertarán aquí -->
+                            <tr>
+                                <td colspan="7" class="text-center">Cargando datos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botones de control -->
+        <div class="d-flex justify-content-between mb-4">
+            <button id="loadDataBtn" class="btn btn-outline-primary">
+                <i class="fas fa-sync-alt"></i> Actualizar Datos
+            </button>
+            <button id="testAPIBtn" class="btn btn-outline-info">
+                <i class="fas fa-vial"></i> Verificar Conexión
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para añadir pago -->
+    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPaymentModalLabel">Registrar Nuevo Pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPaymentForm" class="row g-3">
+                        <div class="col-12">
+                            <label for="personId" class="form-label">Persona</label>
+                            <select class="form-select" id="personId" required>
+                                <option value="">Seleccione una persona</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="amount" class="form-label">Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="amount" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="paymentDate" class="form-label">Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="paymentDate" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="typePaymentId" class="form-label">Tipo de Pago</label>
+                            <select class="form-select" id="typePaymentId">
+                                <option value="">Seleccione un tipo de pago</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="billId" class="form-label">Factura (opcional)</label>
+                            <select class="form-select" id="billId">
+                                <option value="">Seleccione una factura</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="paymentAgreementId" class="form-label">Acuerdo de Pago (opcional)</label>
+                            <select class="form-select" id="paymentAgreementId">
+                                <option value="">Seleccione un acuerdo</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="isActive" checked>
+                                <label class="form-check-label" for="isActive">Pago Activo</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="savePaymentBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar pago -->
+    <div class="modal fade" id="editPaymentModal" tabindex="-1" aria-labelledby="editPaymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPaymentModalLabel">Editar Pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPaymentForm" class="row g-3">
+                        <input type="hidden" id="editPaymentId">
+                        <div class="col-12">
+                            <label for="editPersonId" class="form-label">Persona</label>
+                            <select class="form-select" id="editPersonId" required>
+                                <option value="">Seleccione una persona</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editAmount" class="form-label">Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editAmount" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="editPaymentDate" class="form-label">Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="editPaymentDate" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="editTypePaymentId" class="form-label">Tipo de Pago</label>
+                            <select class="form-select" id="editTypePaymentId">
+                                <option value="">Seleccione un tipo de pago</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editBillId" class="form-label">Factura (opcional)</label>
+                            <select class="form-select" id="editBillId">
+                                <option value="">Seleccione una factura</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editPaymentAgreementId" class="form-label">Acuerdo de Pago (opcional)</label>
+                            <select class="form-select" id="editPaymentAgreementId">
+                                <option value="">Seleccione un acuerdo</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editCreatedAt" class="form-label">Fecha de Creación</label>
+                            <input type="text" class="form-control" id="editCreatedAt" readonly>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="editIsActive">
+                                <label class="form-check-label" for="editIsActive">Pago Activo</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="updatePaymentBtn">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para actualizar monto y fecha de pago -->
+    <div class="modal fade" id="updateAmountDateModal" tabindex="-1" aria-labelledby="updateAmountDateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateAmountDateModalLabel">Actualizar Monto y Fecha</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle"></i> Actualice solo el monto y la fecha de pago sin modificar otros atributos.
+                    </div>
+                    <form id="updateAmountDateForm" class="row g-3">
+                        <input type="hidden" id="amountDatePaymentId">
+                        <div class="col-12">
+                            <label id="updatePersonName" class="form-label fw-bold"></label>
+                        </div>
+                        <div class="col-12">
+                            <label for="updateAmount" class="form-label">Nuevo Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="updateAmount" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="updatePaymentDate" class="form-label">Nueva Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="updatePaymentDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveAmountDateBtn">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/paymentUser.js"></script>
+       
+</body>
+</html>

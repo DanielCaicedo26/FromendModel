@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Infracciones Estatales</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/css/stateInfraction.css">
+       
+    
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">Sistema de Gestión</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- Gestión de Usuarios -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="usuariosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Usuarios
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="usuariosDropdown">
+                        <li><a class="dropdown-item" href="user.html">Usuarios</a></li>
+                        <li><a class="dropdown-item" href="person.html">Personas</a></li>
+                        <li><a class="dropdown-item" href="userNotification.html">Notificaciones</a></li>
+                        <li><a class="dropdown-item" href="accessLog.html">Registro de Acceso</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Roles -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Roles
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="rolesDropdown">
+                        <li><a class="dropdown-item" href="rol.html">Roles</a></li>
+                        <li><a class="dropdown-item" href="rolUser.html">Asignación de Roles</a></li>
+                        <li><a class="dropdown-item" href="permission.html">Permisos</a></li>
+                        <li><a class="dropdown-item" href="roleFormPermission.html">Permisos de Formularios</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Módulos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="modulosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Módulos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="modulosDropdown">
+                        <li><a class="dropdown-item" href="module.html">Módulos</a></li>
+                        <li><a class="dropdown-item" href="moduleForm.html">Formularios de Módulos</a></li>
+                        <li><a class="dropdown-item" href="form.html">Formularios</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Infracciones -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="infraccionesDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Infracciones
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="infraccionesDropdown">
+                        <li><a class="dropdown-item" href="typeinfraction.html">Tipos de Infracciones</a></li>
+                        <li><a class="dropdown-item" href="stateInfraction.html">Estados de Infracción</a></li>
+                        <li><a class="dropdown-item" href="InformationInfraction.html">Información de Infracciones</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Pagos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="pagosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Pagos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="pagosDropdown">
+                        <li><a class="dropdown-item" href="PaymentHistory.html">Historial de Pagos</a></li>
+                        <li><a class="dropdown-item" href="paymentAgreement.html">Acuerdos de Pago</a></li>
+                        <li><a class="dropdown-item" href="paymentUser.html">Pagos de Usuarios</a></li>
+                        <li><a class="dropdown-item" href="typePayment.html">Tipos de Pago</a></li>
+                        <li><a class="dropdown-item" href="bill.html">Facturas</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="container">
+        <h1 class="mb-4">Gestión de Infracciones Estatales</h1>
+        
+        <!-- Área de mensajes de estado -->
+        <div id="statusMessage" style="display:none;"></div>
+        
+        <!-- Tabla de infracciones -->
+        <div class="card mb-5">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Lista de Infracciones</h3>
+                <button class="btn btn-primary" id="addInfractionBtn">
+                    <i class="fas fa-plus-circle"></i> Nueva Infracción
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Persona</th>
+                                <th>Tipo de Infracción</th>
+                                <th>Fecha de Violación</th>
+                                <th>Valor de Multa</th>
+                                <th>Estado</th>
+                                <th>Activo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="infractionTableBody">
+                            <!-- Los datos de las infracciones se insertarán aquí -->
+                            <tr>
+                                <td colspan="8" class="text-center">Cargando datos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botones de control -->
+        <div class="d-flex justify-content-between mb-4">
+            <button id="loadDataBtn" class="btn btn-outline-primary">
+                <i class="fas fa-sync-alt"></i> Actualizar Datos
+            </button>
+            <button id="testAPIBtn" class="btn btn-outline-info">
+                <i class="fas fa-vial"></i> Verificar Conexión
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para añadir infracción -->
+    <div class="modal fade" id="addInfractionModal" tabindex="-1" aria-labelledby="addInfractionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addInfractionModalLabel">Añadir Infracción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addInfractionForm" class="row g-3">
+                        <div class="col-12">
+                            <label for="personId" class="form-label">Persona</label>
+                            <select class="form-select" id="personId" required>
+                                <option value="">Seleccione una persona</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="infractionId" class="form-label">Tipo de Infracción</label>
+                            <select class="form-select" id="infractionId" required>
+                                <option value="">Seleccione un tipo de infracción</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="dateViolation" class="form-label">Fecha de Violación</label>
+                            <input type="datetime-local" class="form-control" id="dateViolation" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="fineValue" class="form-label">Valor de Multa</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="fineValue" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="state" class="form-label">Estado</label>
+                            <select class="form-select" id="state" required>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Pagado">Pagado</option>
+                                <option value="Apelado">Apelado</option>
+                                <option value="Vencido">Vencido</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="isActive" checked>
+                                <label class="form-check-label" for="isActive">Infracción Activa</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveInfractionBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar infracción -->
+    <div class="modal fade" id="editInfractionModal" tabindex="-1" aria-labelledby="editInfractionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editInfractionModalLabel">Editar Infracción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editInfractionForm" class="row g-3">
+                        <input type="hidden" id="editInfractionId">
+                        <div class="col-12">
+                            <label for="editPersonId" class="form-label">Persona</label>
+                            <select class="form-select" id="editPersonId" required>
+                                <option value="">Seleccione una persona</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editInfractionTypeId" class="form-label">Tipo de Infracción</label>
+                            <select class="form-select" id="editInfractionTypeId" required>
+                                <option value="">Seleccione un tipo de infracción</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editDateViolation" class="form-label">Fecha de Violación</label>
+                            <input type="datetime-local" class="form-control" id="editDateViolation" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="editFineValue" class="form-label">Valor de Multa</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editFineValue" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="editState" class="form-label">Estado</label>
+                            <select class="form-select" id="editState" required>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Pagado">Pagado</option>
+                                <option value="Apelado">Apelado</option>
+                                <option value="Vencido">Vencido</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="editIsActive">
+                                <label class="form-check-label" for="editIsActive">Infracción Activa</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="editCreatedAt" class="form-label">Fecha de Creación</label>
+                            <input type="text" class="form-control" id="editCreatedAt" readonly>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="updateInfractionBtn">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para actualizar multa y estado -->
+    <div class="modal fade" id="updateFineStateModal" tabindex="-1" aria-labelledby="updateFineStateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateFineStateModalLabel">Actualizar Multa y Estado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle"></i> Actualice solo el valor de la multa y el estado sin modificar otros atributos.
+                    </div>
+                    <form id="updateFineStateForm" class="row g-3">
+                        <input type="hidden" id="fineStateInfractionId">
+                        <div class="col-12">
+                            <label id="infractionDetailsLabel" class="form-label fw-bold"></label>
+                        </div>
+                        <div class="col-12">
+                            <label for="fineStateValue" class="form-label">Valor de Multa</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="fineStateValue" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="fineStateState" class="form-label">Estado</label>
+                            <select class="form-select" id="fineStateState" required>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Pagado">Pagado</option>
+                                <option value="Apelado">Apelado</option>
+                                <option value="Vencido">Vencido</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveFineStateBtn">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/stateInfraction.js"></script>
+</body>
+</html>

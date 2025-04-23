@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tipos de Infracciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/css/typeinfraction.css">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">Sistema de Gestión</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- Gestión de Usuarios -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="usuariosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Usuarios
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="usuariosDropdown">
+                        <li><a class="dropdown-item" href="user.html">Usuarios</a></li>
+                        <li><a class="dropdown-item" href="person.html">Personas</a></li>
+                        <li><a class="dropdown-item" href="userNotification.html">Notificaciones</a></li>
+                        <li><a class="dropdown-item" href="accessLog.html">Registro de Acceso</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Roles -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Roles
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="rolesDropdown">
+                        <li><a class="dropdown-item" href="rol.html">Roles</a></li>
+                        <li><a class="dropdown-item" href="rolUser.html">Asignación de Roles</a></li>
+                        <li><a class="dropdown-item" href="permission.html">Permisos</a></li>
+                        <li><a class="dropdown-item" href="roleFormPermission.html">Permisos de Formularios</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Módulos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="modulosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Módulos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="modulosDropdown">
+                        <li><a class="dropdown-item" href="module.html">Módulos</a></li>
+                        <li><a class="dropdown-item" href="moduleForm.html">Formularios de Módulos</a></li>
+                        <li><a class="dropdown-item" href="form.html">Formularios</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Infracciones -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="infraccionesDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Infracciones
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="infraccionesDropdown">
+                        <li><a class="dropdown-item" href="typeinfraction.html">Tipos de Infracciones</a></li>
+                        <li><a class="dropdown-item" href="stateInfraction.html">Estados de Infracción</a></li>
+                        <li><a class="dropdown-item" href="InformationInfraction.html">Información de Infracciones</a></li>
+                    </ul>
+                </li>
+                
+                <!-- Gestión de Pagos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="pagosDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Pagos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="pagosDropdown">
+                        <li><a class="dropdown-item" href="PaymentHistory.html">Historial de Pagos</a></li>
+                        <li><a class="dropdown-item" href="paymentAgreement.html">Acuerdos de Pago</a></li>
+                        <li><a class="dropdown-item" href="paymentUser.html">Pagos de Usuarios</a></li>
+                        <li><a class="dropdown-item" href="typePayment.html">Tipos de Pago</a></li>
+                        <li><a class="dropdown-item" href="bill.html">Facturas</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+    <div class="container">
+        <h1 class="mb-4">Gestión de Tipos de Infracciones</h1>
+        
+        <!-- Área de mensajes de estado -->
+        <div id="statusMessage" style="display:none;"></div>
+        
+        <!-- Tabla de tipos de infracciones -->
+        <div class="card mb-5">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Lista de Tipos de Infracciones</h3>
+                <button class="btn btn-primary" id="addTypeInfractionBtn">
+                    <i class="fas fa-plus-circle"></i> Nueva Infracción
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo de Violación</th>
+                                <th>Usuario</th>
+                                <th>Valor</th>
+                                <th>Descripción</th>
+                                <th>Información</th>
+                                <th>Fecha Creación</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="typeInfractionTableBody">
+                            <!-- Los datos de los tipos de infracciones se insertarán aquí -->
+                            <tr>
+                                <td colspan="9" class="text-center">Cargando datos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botones de control -->
+        <div class="d-flex justify-content-between mb-4">
+            <button id="loadDataBtn" class="btn btn-outline-primary">
+                <i class="fas fa-sync-alt"></i> Actualizar Datos
+            </button>
+            <button id="testAPIBtn" class="btn btn-outline-info">
+                <i class="fas fa-vial"></i> Verificar Conexión
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para añadir tipo de infracción -->
+    <div class="modal fade" id="addTypeInfractionModal" tabindex="-1" aria-labelledby="addTypeInfractionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTypeInfractionModalLabel">Añadir Tipo de Infracción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTypeInfractionForm" class="row g-3">
+                        <div class="col-12">
+                            <label for="typeViolation" class="form-label">Tipo de Violación</label>
+                            <input type="text" class="form-control" id="typeViolation" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="userId" class="form-label">Usuario</label>
+                            <select class="form-select" id="userId" required>
+                                <option value="">Seleccionar usuario...</option>
+                                <!-- Se llenará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="valueInfraction" class="form-label">Valor de la Infracción</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="valueInfraction" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="informationFine" class="form-label">Información de la Multa</label>
+                            <textarea class="form-control" id="informationFine" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="isActive" checked>
+                                <label class="form-check-label" for="isActive">Infracción Activa</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveTypeInfractionBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar tipo de infracción -->
+    <div class="modal fade" id="editTypeInfractionModal" tabindex="-1" aria-labelledby="editTypeInfractionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTypeInfractionModalLabel">Editar Tipo de Infracción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTypeInfractionForm" class="row g-3">
+                        <input type="hidden" id="editTypeInfractionId">
+                        <div class="col-12">
+                            <label for="editTypeViolation" class="form-label">Tipo de Violación</label>
+                            <input type="text" class="form-control" id="editTypeViolation" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="editUserId" class="form-label">Usuario</label>
+                            <select class="form-select" id="editUserId" required>
+                                <option value="">Seleccionar usuario...</option>
+                                <!-- Se llenará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editValueInfraction" class="form-label">Valor de la Infracción</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editValueInfraction" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="editDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="editInformationFine" class="form-label">Información de la Multa</label>
+                            <textarea class="form-control" id="editInformationFine" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="editIsActive">
+                                <label class="form-check-label" for="editIsActive">Infracción Activa</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="editCreatedAt" class="form-label">Fecha de Creación</label>
+                            <input type="text" class="form-control" id="editCreatedAt" readonly>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="updateTypeInfractionBtn">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para actualizar tipo de violación y valor -->
+    <div class="modal fade" id="updatePartialModal" tabindex="-1" aria-labelledby="updatePartialModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updatePartialModalLabel">Actualizar Tipo y Valor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle"></i> Actualice solo el tipo de violación y el valor de la infracción sin modificar otros atributos.
+                    </div>
+                    <form id="updatePartialForm" class="row g-3">
+                        <input type="hidden" id="partialTypeInfractionId">
+                        <div class="col-12">
+                            <label for="partialTypeViolation" class="form-label">Tipo de Violación</label>
+                            <input type="text" class="form-control" id="partialTypeViolation" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="partialValueInfraction" class="form-label">Valor de la Infracción</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="partialValueInfraction" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="savePartialBtn">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/typeinfraction.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+body {
+    background-color: #ffffff;
+    color: #333;
+}
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.table {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.table th {
+    background-color: #f8f9fa;
+}
+.navbar {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.navbar-brand {
+    font-weight: bold;
+}
+.nav-link.active {
+    font-weight: bold;
+    color: #007bff !important;
+}
+.card {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #f0f0f0;
+}
+#statusMessage {
+    margin-bottom: 20px;
+}
+.description-cell {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

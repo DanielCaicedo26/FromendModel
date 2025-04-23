@@ -1,0 +1,78 @@
+body {
+    background-color: #ffffff;
+    color: #333;
+}
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.table {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.table th {
+    background-color: #f8f9fa;
+}
+.btn-register {
+    background-color: #6f42c1;
+    color: white;
+}
+.btn-register:hover {
+    background-color: #5a32ab;
+    color: white;
+}
+.navbar {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.navbar-brand {
+    font-weight: bold;
+}
+.nav-link.active {
+    font-weight: bold;
+    color: #007bff !important;
+}
+.card {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #f0f0f0;
+}
+#statusMessage {
+    margin-bottom: 20px;
+}
+
+/* Estilos para mejorar la navegación desplegable */
+.dropdown-menu {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.navbar-nav .nav-link.active {
+    color: #6f42c1 !important;
+    font-weight: bold;
+}
+
+/* Asegurar que los menús desplegables se muestren correctamente en móviles */
+@media (max-width: 992px) {
+    .dropdown-menu {
+        border: none;
+        padding-left: 1.5rem;
+        box-shadow: none;
+    }
+}

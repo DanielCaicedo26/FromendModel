@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Permisos</title>
+    <title>Gestión de Historiales de Pago</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="/css/permission.css">
+    <link rel="stylesheet" href="/Administrador/css/PaymentHistory.css">
 </head>
 <body>
     <!-- Barra de navegación -->
-    <!-- Barra de navegación -->
+   <!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand" href="#">Sistema de Gestión</a>
@@ -92,24 +92,48 @@
         </div>
     </div>
 </nav>
-
-                </ul>
-            </div>
-        </div>
-    </nav>
-
     <div class="container">
-        <h1 class="mb-4">Gestión de Permisos</h1>
+        <h1 class="mb-4">Gestión de Historiales de Pago</h1>
         
         <!-- Área de mensajes de estado -->
         <div id="statusMessage" style="display:none;"></div>
         
-        <!-- Tabla de permisos -->
+        <!-- Filtros -->
+        <div class="filter-section">
+            <h5 class="mb-3"><i class="fas fa-filter"></i> Filtros</h5>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="filterUser" class="form-label">Usuario</label>
+                    <select class="form-select" id="filterUser">
+                        <option value="">Todos</option>
+                        <!-- Se llenará dinámicamente -->
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filterDateFrom" class="form-label">Fecha desde</label>
+                    <input type="date" class="form-control" id="filterDateFrom">
+                </div>
+                <div class="col-md-3">
+                    <label for="filterDateTo" class="form-label">Fecha hasta</label>
+                    <input type="date" class="form-control" id="filterDateTo">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button id="applyFiltersBtn" class="btn btn-primary me-2">
+                        <i class="fas fa-search"></i> Aplicar
+                    </button>
+                    <button id="clearFiltersBtn" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabla de historiales de pago -->
         <div class="card mb-5">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Lista de Permisos</h3>
-                <button class="btn btn-primary" id="addPermissionBtn">
-                    <i class="fas fa-plus-circle"></i> Nuevo Permiso
+                <h3 class="mb-0">Historial de Pagos</h3>
+                <button class="btn btn-primary" id="addPaymentHistoryBtn">
+                    <i class="fas fa-plus-circle"></i> Nuevo Pago
                 </button>
             </div>
             <div class="card-body">
@@ -118,20 +142,30 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
+                                <th>Usuario</th>
+                                <th>Monto</th>
+                                <th>Fecha de Pago</th>
+                                <th>Nota</th>
                                 <th>Fecha Creación</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="permissionTableBody">
-                            <!-- Los datos de los permisos se insertarán aquí -->
+                        <tbody id="paymentHistoryTableBody">
+                            <!-- Los datos se insertarán aquí -->
                             <tr>
-                                <td colspan="6" class="text-center">Cargando datos...</td>
+                                <td colspan="8" class="text-center">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span class="me-3">Total de registros: <span id="totalRecords">0</span></span>
+                    </div>
+                    <div>
+                        <span class="me-3">Total: <span id="totalAmount" class="fw-bold">$0.00</span></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,63 +181,105 @@
         </div>
     </div>
 
-    <!-- Modal para añadir permiso -->
-    <div class="modal fade" id="addPermissionModal" tabindex="-1" aria-labelledby="addPermissionModalLabel" aria-hidden="true">
+    <!-- Modal para añadir historial de pago -->
+    <div class="modal fade" id="addPaymentHistoryModal" tabindex="-1" aria-labelledby="addPaymentHistoryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPermissionModalLabel">Añadir Permiso</h5>
+                    <h5 class="modal-title" id="addPaymentHistoryModalLabel">Registrar Nuevo Pago</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addPermissionForm" class="row g-3">
+                    <form id="addPaymentHistoryForm" class="row g-3">
                         <div class="col-12">
-                            <label for="name" class="form-label">Nombre del Permiso</label>
-                            <input type="text" class="form-control" id="name" required>
+                            <label for="userId" class="form-label">Usuario</label>
+                            <select class="form-select" id="userId" required>
+                                <option value="">Seleccione un usuario</option>
+                                <!-- Se llenará dinámicamente -->
+                            </select>
                         </div>
                         <div class="col-12">
-                            <label for="description" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="description" rows="3"></textarea>
+                            <label for="amount" class="form-label">Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="amount" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="paymentDate" class="form-label">Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="paymentDate" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="note" class="form-label">Nota</label>
+                            <textarea class="form-control" id="note" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="informationInfractionId" class="form-label">Infracción (opcional)</label>
+                            <select class="form-select" id="informationInfractionId">
+                                <option value="">Ninguna</option>
+                                <!-- Se llenará dinámicamente (si hay disponible) -->
+                            </select>
                         </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="isActive" checked>
-                                <label class="form-check-label" for="isActive">Permiso Activo</label>
+                                <label class="form-check-label" for="isActive">Pago Activo</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="savePermissionBtn">Guardar</button>
+                    <button type="button" class="btn btn-primary" id="savePaymentHistoryBtn">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para editar permiso -->
-    <div class="modal fade" id="editPermissionModal" tabindex="-1" aria-labelledby="editPermissionModalLabel" aria-hidden="true">
+    <!-- Modal para editar historial de pago -->
+    <div class="modal fade" id="editPaymentHistoryModal" tabindex="-1" aria-labelledby="editPaymentHistoryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editPermissionModalLabel">Editar Permiso</h5>
+                    <h5 class="modal-title" id="editPaymentHistoryModalLabel">Editar Pago</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editPermissionForm" class="row g-3">
-                        <input type="hidden" id="editPermissionId">
+                    <form id="editPaymentHistoryForm" class="row g-3">
+                        <input type="hidden" id="editPaymentHistoryId">
                         <div class="col-12">
-                            <label for="editName" class="form-label">Nombre del Permiso</label>
-                            <input type="text" class="form-control" id="editName" required>
+                            <label for="editUserId" class="form-label">Usuario</label>
+                            <select class="form-select" id="editUserId" required>
+                                <option value="">Seleccione un usuario</option>
+                                <!-- Se llenará dinámicamente -->
+                            </select>
                         </div>
                         <div class="col-12">
-                            <label for="editDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                            <label for="editAmount" class="form-label">Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editAmount" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="editPaymentDate" class="form-label">Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="editPaymentDate" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="editNote" class="form-label">Nota</label>
+                            <textarea class="form-control" id="editNote" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="editInformationInfractionId" class="form-label">Infracción (opcional)</label>
+                            <select class="form-select" id="editInformationInfractionId">
+                                <option value="">Ninguna</option>
+                                <!-- Se llenará dinámicamente (si hay disponible) -->
+                            </select>
                         </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="editIsActive">
-                                <label class="form-check-label" for="editIsActive">Permiso Activo</label>
+                                <label class="form-check-label" for="editIsActive">Pago Activo</label>
                             </div>
                         </div>
                         <div class="col-12">
@@ -214,39 +290,46 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="updatePermissionBtn">Actualizar</button>
+                    <button type="button" class="btn btn-primary" id="updatePaymentHistoryBtn">Actualizar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para actualizar nombre y descripción -->
-    <div class="modal fade" id="updateNameDescModal" tabindex="-1" aria-labelledby="updateNameDescModalLabel" aria-hidden="true">
+    <!-- Modal para actualizar monto y fecha -->
+    <div class="modal fade" id="updateAmountDateModal" tabindex="-1" aria-labelledby="updateAmountDateModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateNameDescModalLabel">Actualizar Nombre y Descripción</h5>
+                    <h5 class="modal-title" id="updateAmountDateModalLabel">Actualizar Monto y Fecha</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="fas fa-info-circle"></i> Actualice solo el nombre y la descripción sin modificar otros atributos.
+                        <i class="fas fa-info-circle"></i> Actualice solo el monto y la fecha de pago sin modificar otros atributos.
                     </div>
-                    <form id="updateNameDescForm" class="row g-3">
-                        <input type="hidden" id="partialPermissionId">
+                    <form id="updateAmountDateForm" class="row g-3">
+                        <input type="hidden" id="amountDatePaymentHistoryId">
                         <div class="col-12">
-                            <label for="partialName" class="form-label">Nombre del Permiso</label>
-                            <input type="text" class="form-control" id="partialName" required>
+                            <label for="amountDatePaymentDetails" class="form-label fw-bold">Detalles del Pago</label>
+                            <p id="amountDatePaymentDetails" class="form-text"></p>
                         </div>
                         <div class="col-12">
-                            <label for="partialDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="partialDescription" rows="3"></textarea>
+                            <label for="amountDateAmount" class="form-label">Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="amountDateAmount" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="amountDatePaymentDate" class="form-label">Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="amountDatePaymentDate" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveNameDescBtn">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" id="saveAmountDateBtn">Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -254,8 +337,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/permission.js"></script>
-       
-    
+    <script src="/Administrador/js/PaymentHistory.js"></script>
 </body>
 </html>

@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Notificaciones de Usuarios</title>
+    <title>Gestión de Tipos de Infracciones</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="/css/userNotification.css">
+    <link rel="stylesheet" href="/Administrador/css/typeinfraction.css">
 </head>
 <body>
     <!-- Barra de navegación -->
@@ -92,25 +92,19 @@
         </div>
     </div>
 </nav>
-
     <div class="container">
-        <h1 class="mb-4">Gestión de Notificaciones de Usuarios</h1>
+        <h1 class="mb-4">Gestión de Tipos de Infracciones</h1>
         
         <!-- Área de mensajes de estado -->
         <div id="statusMessage" style="display:none;"></div>
         
-        <!-- Tabla de notificaciones -->
+        <!-- Tabla de tipos de infracciones -->
         <div class="card mb-5">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Lista de Notificaciones</h3>
-                <div>
-                    <button id="markAllReadBtn" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-check-double"></i> Marcar Todas como Leídas
-                    </button>
-                    <button id="addNotificationBtn" class="btn btn-primary">
-                        <i class="fas fa-bell"></i> Nueva Notificación
-                    </button>
-                </div>
+                <h3 class="mb-0">Lista de Tipos de Infracciones</h3>
+                <button class="btn btn-primary" id="addTypeInfractionBtn">
+                    <i class="fas fa-plus-circle"></i> Nueva Infracción
+                </button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -118,18 +112,20 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Tipo de Violación</th>
                                 <th>Usuario</th>
-                                <th>Mensaje</th>
-                                <th>Estado Lectura</th>
-                                <th>Activo</th>
+                                <th>Valor</th>
+                                <th>Descripción</th>
+                                <th>Información</th>
                                 <th>Fecha Creación</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="notificationTableBody">
-                            <!-- Los datos de las notificaciones se insertarán aquí -->
+                        <tbody id="typeInfractionTableBody">
+                            <!-- Los datos de los tipos de infracciones se insertarán aquí -->
                             <tr>
-                                <td colspan="7" class="text-center">Cargando datos...</td>
+                                <td colspan="9" class="text-center">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -148,75 +144,99 @@
         </div>
     </div>
 
-    <!-- Modal para añadir notificación -->
-    <div class="modal fade" id="addNotificationModal" tabindex="-1" aria-labelledby="addNotificationModalLabel" aria-hidden="true">
+    <!-- Modal para añadir tipo de infracción -->
+    <div class="modal fade" id="addTypeInfractionModal" tabindex="-1" aria-labelledby="addTypeInfractionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addNotificationModalLabel">Enviar Nueva Notificación</h5>
+                    <h5 class="modal-title" id="addTypeInfractionModalLabel">Añadir Tipo de Infracción</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addNotificationForm" class="row g-3">
+                    <form id="addTypeInfractionForm" class="row g-3">
+                        <div class="col-12">
+                            <label for="typeViolation" class="form-label">Tipo de Violación</label>
+                            <input type="text" class="form-control" id="typeViolation" required>
+                        </div>
                         <div class="col-12">
                             <label for="userId" class="form-label">Usuario</label>
                             <select class="form-select" id="userId" required>
-                                <option value="">Seleccionar usuario</option>
+                                <option value="">Seleccionar usuario...</option>
                                 <!-- Se llenará dinámicamente -->
                             </select>
                         </div>
                         <div class="col-12">
-                            <label for="message" class="form-label">Mensaje</label>
-                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                            <label for="valueInfraction" class="form-label">Valor de la Infracción</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="valueInfraction" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="informationFine" class="form-label">Información de la Multa</label>
+                            <textarea class="form-control" id="informationFine" rows="3"></textarea>
                         </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="isActive" checked>
-                                <label class="form-check-label" for="isActive">Notificación Activa</label>
+                                <label class="form-check-label" for="isActive">Infracción Activa</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveNotificationBtn">Enviar Notificación</button>
+                    <button type="button" class="btn btn-primary" id="saveTypeInfractionBtn">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para editar notificación -->
-    <div class="modal fade" id="editNotificationModal" tabindex="-1" aria-labelledby="editNotificationModalLabel" aria-hidden="true">
+    <!-- Modal para editar tipo de infracción -->
+    <div class="modal fade" id="editTypeInfractionModal" tabindex="-1" aria-labelledby="editTypeInfractionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editNotificationModalLabel">Editar Notificación</h5>
+                    <h5 class="modal-title" id="editTypeInfractionModalLabel">Editar Tipo de Infracción</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editNotificationForm" class="row g-3">
-                        <input type="hidden" id="editNotificationId">
+                    <form id="editTypeInfractionForm" class="row g-3">
+                        <input type="hidden" id="editTypeInfractionId">
+                        <div class="col-12">
+                            <label for="editTypeViolation" class="form-label">Tipo de Violación</label>
+                            <input type="text" class="form-control" id="editTypeViolation" required>
+                        </div>
                         <div class="col-12">
                             <label for="editUserId" class="form-label">Usuario</label>
                             <select class="form-select" id="editUserId" required>
-                                <option value="">Seleccionar usuario</option>
+                                <option value="">Seleccionar usuario...</option>
                                 <!-- Se llenará dinámicamente -->
                             </select>
                         </div>
                         <div class="col-12">
-                            <label for="editMessage" class="form-label">Mensaje</label>
-                            <textarea class="form-control" id="editMessage" rows="4" required></textarea>
+                            <label for="editValueInfraction" class="form-label">Valor de la Infracción</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editValueInfraction" step="0.01" min="0" required>
+                            </div>
                         </div>
                         <div class="col-12">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="editIsRead">
-                                <label class="form-check-label" for="editIsRead">Marcada como Leída</label>
-                            </div>
+                            <label for="editDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="editInformationFine" class="form-label">Información de la Multa</label>
+                            <textarea class="form-control" id="editInformationFine" rows="3"></textarea>
                         </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="editIsActive">
-                                <label class="form-check-label" for="editIsActive">Notificación Activa</label>
+                                <label class="form-check-label" for="editIsActive">Infracción Activa</label>
                             </div>
                         </div>
                         <div class="col-12">
@@ -227,96 +247,42 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="updateNotificationBtn">Actualizar</button>
+                    <button type="button" class="btn btn-primary" id="updateTypeInfractionBtn">Actualizar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para actualizar mensaje y estado de lectura -->
-    <div class="modal fade" id="updateMessageReadModal" tabindex="-1" aria-labelledby="updateMessageReadModalLabel" aria-hidden="true">
+    <!-- Modal para actualizar tipo de violación y valor -->
+    <div class="modal fade" id="updatePartialModal" tabindex="-1" aria-labelledby="updatePartialModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateMessageReadModalLabel">Actualizar Mensaje y Estado de Lectura</h5>
+                    <h5 class="modal-title" id="updatePartialModalLabel">Actualizar Tipo y Valor</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="fas fa-info-circle"></i> Actualice el mensaje y el estado de lectura sin modificar otros atributos.
+                        <i class="fas fa-info-circle"></i> Actualice solo el tipo de violación y el valor de la infracción sin modificar otros atributos.
                     </div>
-                    <form id="updateMessageReadForm" class="row g-3">
-                        <input type="hidden" id="messageReadId">
+                    <form id="updatePartialForm" class="row g-3">
+                        <input type="hidden" id="partialTypeInfractionId">
                         <div class="col-12">
-                            <label id="messageReadUserLabel" class="form-label fw-bold"></label>
+                            <label for="partialTypeViolation" class="form-label">Tipo de Violación</label>
+                            <input type="text" class="form-control" id="partialTypeViolation" required>
                         </div>
                         <div class="col-12">
-                            <label for="messageReadText" class="form-label">Mensaje</label>
-                            <textarea class="form-control" id="messageReadText" rows="4" required></textarea>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="messageIsRead">
-                                <label class="form-check-label" for="messageIsRead">Marcada como Leída</label>
+                            <label for="partialValueInfraction" class="form-label">Valor de la Infracción</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="partialValueInfraction" step="0.01" min="0" required>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveMessageReadBtn">Guardar Cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal para ver detalle de notificación -->
-    <div class="modal fade" id="viewNotificationModal" tabindex="-1" aria-labelledby="viewNotificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewNotificationModalLabel">Detalle de Notificación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="fw-bold">ID:</label>
-                                <span id="viewNotificationId"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="fw-bold">Usuario:</label>
-                                <span id="viewNotificationUser"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="fw-bold">Mensaje:</label>
-                                <div id="viewNotificationMessage" class="border p-2 rounded bg-light"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="fw-bold">Estado:</label>
-                                <span id="viewNotificationIsRead"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="fw-bold">Activo:</label>
-                                <span id="viewNotificationIsActive"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="fw-bold">Fecha de Creación:</label>
-                                <span id="viewNotificationCreatedAt"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-3 border-top">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="viewMarkAsRead">
-                            <label class="form-check-label" for="viewMarkAsRead">Marcar como leída</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" id="saveViewStatusBtn">Guardar Estado</button>
+                    <button type="button" class="btn btn-primary" id="savePartialBtn">Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -324,6 +290,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/userNotification.js"></script>
+    <script src="/Administrador/js/typeinfraction.js"></script>
 </body>
 </html>

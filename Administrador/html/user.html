@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Acuerdos de Pago</title>
+    <title>Gestión de Usuarios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="/css/paymentAgreement.css">
+    <link rel="stylesheet" href="/Administrador/css/user.css">
 </head>
 <body>
     <!-- Barra de navegación -->
-   <!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand" href="#">Sistema de Gestión</a>
@@ -94,17 +93,23 @@
 </nav>
 
     <div class="container">
-        <h1 class="mb-4">Gestión de Acuerdos de Pago</h1>
+        <h1 class="mb-4">Gestión de Usuarios</h1>
         
         <!-- Área de mensajes de estado -->
         <div id="statusMessage" style="display:none;"></div>
         
-        <!-- Tabla de acuerdos de pago -->
+        <!-- Notificación para cuando se redirige desde la página de personas -->
+        <div id="personNotification" class="alert alert-info" style="display:none;">
+            <i class="fas fa-info-circle"></i> 
+            <span id="personNotificationText">Persona seleccionada para registro de usuario.</span>
+        </div>
+        
+        <!-- Tabla de usuarios -->
         <div class="card mb-5">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Lista de Acuerdos de Pago</h3>
-                <button class="btn btn-primary" id="addPaymentAgreementBtn">
-                    <i class="fas fa-plus-circle"></i> Nuevo Acuerdo
+                <h3 class="mb-0">Lista de Usuarios</h3>
+                <button class="btn btn-primary" id="addUserBtn">
+                    <i class="fas fa-user-plus"></i> Nuevo Usuario
                 </button>
             </div>
             <div class="card-body">
@@ -113,18 +118,17 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Dirección</th>
-                                <th>Barrio</th>
-                                <th>Monto a Financiar</th>
-                                <th>Descripción</th>
+                                <th>Nombre de Usuario</th>
+                                <th>Correo Electrónico</th>
+                                <th>ID Persona</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="paymentAgreementTableBody">
-                            <!-- Los datos de los acuerdos de pago se insertarán aquí -->
+                        <tbody id="userTableBody">
+                            <!-- Los datos de los usuarios se insertarán aquí -->
                             <tr>
-                                <td colspan="7" class="text-center">Cargando datos...</td>
+                                <td colspan="6" class="text-center">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -143,137 +147,118 @@
         </div>
     </div>
 
-    <!-- Modal para añadir acuerdo de pago -->
-    <div class="modal fade" id="addPaymentAgreementModal" tabindex="-1" aria-labelledby="addPaymentAgreementModalLabel" aria-hidden="true">
+    <!-- Modal para añadir usuario -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPaymentAgreementModalLabel">Añadir Acuerdo de Pago</h5>
+                    <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addPaymentAgreementForm" class="row g-3">
+                    <form id="addUserForm" class="row g-3">
                         <div class="col-12">
-                            <label for="address" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="address" required>
+                            <label for="username" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="username" required>
                         </div>
                         <div class="col-12">
-                            <label for="neighborhood" class="form-label">Barrio</label>
-                            <input type="text" class="form-control" id="neighborhood">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" required>
                         </div>
                         <div class="col-12">
-                            <label for="financeAmount" class="form-label">Monto a Financiar</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control input-finance-amount" id="financeAmount" step="0.01" min="0" required>
-                            </div>
-                            <small class="form-text text-muted">Ingrese el monto en formato decimal (ejemplo: 1000.50)</small>
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" required>
                         </div>
-                        <div class="col-12">
-                            <label for="agreementDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="agreementDescription" rows="3"></textarea>
-                        </div>
+                        <!-- Campo oculto para el ID de persona -->
+                        <input type="hidden" id="personId" value="0">
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="isActive" checked>
-                                <label class="form-check-label" for="isActive">Acuerdo Activo</label>
+                                <label class="form-check-label" for="isActive">Usuario Activo</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="savePaymentAgreementBtn">Guardar</button>
+                    <button type="button" class="btn btn-primary" id="saveUserBtn">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para editar acuerdo de pago -->
-    <div class="modal fade" id="editPaymentAgreementModal" tabindex="-1" aria-labelledby="editPaymentAgreementModalLabel" aria-hidden="true">
+    <!-- Modal para editar usuario -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editPaymentAgreementModalLabel">Editar Acuerdo de Pago</h5>
+                    <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editPaymentAgreementForm" class="row g-3">
-                        <input type="hidden" id="editPaymentAgreementId">
+                    <form id="editUserForm" class="row g-3">
+                        <input type="hidden" id="editUserId">
                         <div class="col-12">
-                            <label for="editAddress" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="editAddress" required>
+                            <label for="editUsername" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="editUsername" required>
                         </div>
                         <div class="col-12">
-                            <label for="editNeighborhood" class="form-label">Barrio</label>
-                            <input type="text" class="form-control" id="editNeighborhood">
+                            <label for="editEmail" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="editEmail" required>
                         </div>
                         <div class="col-12">
-                            <label for="editFinanceAmount" class="form-label">Monto a Financiar</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control input-finance-amount" id="editFinanceAmount" step="0.01" min="0" required>
-                            </div>
-                            <small class="form-text text-muted">Ingrese el monto en formato decimal (ejemplo: 1000.50)</small>
+                            <label for="editPassword" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="editPassword" placeholder="Dejar en blanco para mantener la actual">
                         </div>
-                        <div class="col-12">
-                            <label for="editAgreementDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="editAgreementDescription" rows="3"></textarea>
-                        </div>
+                        <!-- Campo oculto para el ID de persona -->
+                        <input type="hidden" id="editPersonId" value="0">
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="editIsActive">
-                                <label class="form-check-label" for="editIsActive">Acuerdo Activo</label>
+                                <label class="form-check-label" for="editIsActive">Usuario Activo</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="updatePaymentAgreementBtn">Actualizar</button>
+                    <button type="button" class="btn btn-primary" id="updateUserBtn">Actualizar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para actualización parcial -->
-    <div class="modal fade" id="partialUpdateModal" tabindex="-1" aria-labelledby="partialUpdateModalLabel" aria-hidden="true">
+    <!-- Modal para actualizar credenciales -->
+    <div class="modal fade" id="credentialsModal" tabindex="-1" aria-labelledby="credentialsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="partialUpdateModalLabel">Actualización Parcial</h5>
+                    <h5 class="modal-title" id="credentialsModalLabel">Actualizar Credenciales</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="fas fa-info-circle"></i> Actualice solo los campos necesarios sin modificar otros atributos.
+                        <i class="fas fa-info-circle"></i> Actualice sólo las credenciales sin modificar otros datos del usuario.
                     </div>
-                    <form id="partialUpdateForm" class="row g-3">
-                        <input type="hidden" id="partialUpdateId">
+                    <form id="credentialsForm" class="row g-3">
+                        <input type="hidden" id="credentialsUserId">
                         <div class="col-12">
-                            <label for="partialAddress" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="partialAddress" required>
+                            <label for="credentialsUsername" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="credentialsUsername" required>
                         </div>
                         <div class="col-12">
-                            <label for="partialNeighborhood" class="form-label">Barrio</label>
-                            <input type="text" class="form-control" id="partialNeighborhood">
+                            <label for="credentialsEmail" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="credentialsEmail" required>
                         </div>
                         <div class="col-12">
-                            <label for="partialFinanceAmount" class="form-label">Monto a Financiar</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control input-finance-amount" id="partialFinanceAmount" step="0.01" min="0" required>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label for="partialAgreementDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="partialAgreementDescription" rows="3"></textarea>
+                            <label for="credentialsPassword" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="credentialsPassword" placeholder="Dejar en blanco si no desea cambiarla">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="savePartialUpdateBtn">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" id="saveCredentialsBtn">Guardar Credenciales</button>
                 </div>
             </div>
         </div>
@@ -281,6 +266,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/paymentAgreement.js"></script>
+    <script src="/Administrador/js/user.js"></script>
 </body>
 </html>

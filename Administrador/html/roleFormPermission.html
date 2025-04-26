@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Módulos</title>
+    <title>Gestión de Permisos de Roles en Formularios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="/css/module.css">
-   
+    <link rel="stylesheet" href="/css/roleFormPermission.css">
+    
 </head>
 <body>
     <!-- Barra de navegación -->
-    <!-- Barra de navegación -->
+   <!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand" href="#">Sistema de Gestión</a>
@@ -93,19 +93,18 @@
         </div>
     </div>
 </nav>
-
     <div class="container">
-        <h1 class="mb-4">Gestión de Módulos</h1>
+        <h1 class="mb-4">Gestión de Permisos de Roles en Formularios</h1>
         
         <!-- Área de mensajes de estado -->
         <div id="statusMessage" style="display:none;"></div>
         
-        <!-- Tabla de módulos -->
+        <!-- Tabla de permisos de roles en formularios -->
         <div class="card mb-5">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Lista de Módulos</h3>
-                <button class="btn btn-primary" id="addModuleBtn">
-                    <i class="fas fa-plus-circle"></i> Nuevo Módulo
+                <h3 class="mb-0">Permisos Asignados</h3>
+                <button class="btn btn-primary" id="addRoleFormPermissionBtn">
+                    <i class="fas fa-plus-circle"></i> Nueva Asignación
                 </button>
             </div>
             <div class="card-body">
@@ -114,17 +113,18 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
+                                <th>Rol</th>
+                                <th>Formulario</th>
+                                <th>Permiso</th>
+                                <th>Permisos Específicos</th>
                                 <th>Estado</th>
-                                <th>Activo</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="moduleTableBody">
-                            <!-- Los datos de los módulos se insertarán aquí -->
+                        <tbody id="roleFormPermissionTableBody">
+                            <!-- Los datos se insertarán aquí -->
                             <tr>
-                                <td colspan="6" class="text-center">Cargando datos...</td>
+                                <td colspan="7" class="text-center">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -143,129 +143,180 @@
         </div>
     </div>
 
-    <!-- Modal para añadir módulo -->
-    <div class="modal fade" id="addModuleModal" tabindex="-1" aria-labelledby="addModuleModalLabel" aria-hidden="true">
+    <!-- Modal para añadir permiso de rol en formulario -->
+    <div class="modal fade" id="addRoleFormPermissionModal" tabindex="-1" aria-labelledby="addRoleFormPermissionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addModuleModalLabel">Añadir Módulo</h5>
+                    <h5 class="modal-title" id="addRoleFormPermissionModalLabel">Asignar Permiso a Rol y Formulario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addModuleForm" class="row g-3">
+                    <form id="addRoleFormPermissionForm" class="row g-3">
                         <div class="col-12">
-                            <label for="name" class="form-label">Nombre del Módulo</label>
-                            <input type="text" class="form-control" id="name" required>
-                        </div>
-                        <div class="col-12">
-                            <label for="description" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="description" rows="3"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label for="statu" class="form-label">Estado</label>
-                            <select class="form-select" id="statu">
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
-                                <option value="En Desarrollo">En Desarrollo</option>
-                                <option value="Suspendido">Suspendido</option>
+                            <label for="roleId" class="form-label">Rol</label>
+                            <select class="form-select" id="roleId" required>
+                                <option value="">Seleccione un rol</option>
+                                <!-- Se cargará dinámicamente -->
                             </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="formId" class="form-label">Formulario</label>
+                            <select class="form-select" id="formId" required>
+                                <option value="">Seleccione un formulario</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="permissionId" class="form-label">Permiso</label>
+                            <select class="form-select" id="permissionId" required>
+                                <option value="">Seleccione un permiso</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12 permission-group">
+                            <h6>Permisos Específicos</h6>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="canCreate" checked>
+                                <label class="form-check-label permission-label can-create" for="canCreate">Crear</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="canRead" checked>
+                                <label class="form-check-label permission-label can-read" for="canRead">Leer</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="canUpdate" checked>
+                                <label class="form-check-label permission-label can-update" for="canUpdate">Actualizar</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="canDelete" checked>
+                                <label class="form-check-label permission-label can-delete" for="canDelete">Eliminar</label>
+                            </div>
                         </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="isActive" checked>
-                                <label class="form-check-label" for="isActive">Módulo Activo</label>
+                                <label class="form-check-label" for="isActive">Activo</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveModuleBtn">Guardar</button>
+                    <button type="button" class="btn btn-primary" id="saveRoleFormPermissionBtn">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para editar módulo -->
-    <div class="modal fade" id="editModuleModal" tabindex="-1" aria-labelledby="editModuleModalLabel" aria-hidden="true">
+    <!-- Modal para editar permiso de rol en formulario -->
+    <div class="modal fade" id="editRoleFormPermissionModal" tabindex="-1" aria-labelledby="editRoleFormPermissionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModuleModalLabel">Editar Módulo</h5>
+                    <h5 class="modal-title" id="editRoleFormPermissionModalLabel">Editar Permiso de Rol en Formulario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editModuleForm" class="row g-3">
-                        <input type="hidden" id="editModuleId">
+                    <form id="editRoleFormPermissionForm" class="row g-3">
+                        <input type="hidden" id="editRoleFormPermissionId">
                         <div class="col-12">
-                            <label for="editName" class="form-label">Nombre del Módulo</label>
-                            <input type="text" class="form-control" id="editName" required>
-                        </div>
-                        <div class="col-12">
-                            <label for="editDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label for="editStatu" class="form-label">Estado</label>
-                            <select class="form-select" id="editStatu">
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
-                                <option value="En Desarrollo">En Desarrollo</option>
-                                <option value="Suspendido">Suspendido</option>
+                            <label for="editRoleId" class="form-label">Rol</label>
+                            <select class="form-select" id="editRoleId" required>
+                                <option value="">Seleccione un rol</option>
+                                <!-- Se cargará dinámicamente -->
                             </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editFormId" class="form-label">Formulario</label>
+                            <select class="form-select" id="editFormId" required>
+                                <option value="">Seleccione un formulario</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editPermissionId" class="form-label">Permiso</label>
+                            <select class="form-select" id="editPermissionId" required>
+                                <option value="">Seleccione un permiso</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12 permission-group">
+                            <h6>Permisos Específicos</h6>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="editCanCreate">
+                                <label class="form-check-label permission-label can-create" for="editCanCreate">Crear</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="editCanRead">
+                                <label class="form-check-label permission-label can-read" for="editCanRead">Leer</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="editCanUpdate">
+                                <label class="form-check-label permission-label can-update" for="editCanUpdate">Actualizar</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="editCanDelete">
+                                <label class="form-check-label permission-label can-delete" for="editCanDelete">Eliminar</label>
+                            </div>
                         </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="editIsActive">
-                                <label class="form-check-label" for="editIsActive">Módulo Activo</label>
+                                <label class="form-check-label" for="editIsActive">Activo</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="updateModuleBtn">Actualizar</button>
+                    <button type="button" class="btn btn-primary" id="updateRoleFormPermissionBtn">Actualizar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para actualizar información básica -->
-    <div class="modal fade" id="updateBasicInfoModal" tabindex="-1" aria-labelledby="updateBasicInfoModalLabel" aria-hidden="true">
+    <!-- Modal para actualizar solo los permisos específicos -->
+    <div class="modal fade" id="updatePermissionsModal" tabindex="-1" aria-labelledby="updatePermissionsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateBasicInfoModalLabel">Actualizar Información Básica</h5>
+                    <h5 class="modal-title" id="updatePermissionsModalLabel">Actualizar Permisos Específicos</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="fas fa-info-circle"></i> Actualice solo la información básica sin modificar otros atributos.
+                        <i class="fas fa-info-circle"></i> Actualice solo los permisos específicos sin modificar otros atributos.
                     </div>
-                    <form id="updateBasicInfoForm" class="row g-3">
-                        <input type="hidden" id="basicInfoId">
+                    <form id="updatePermissionsForm" class="row g-3">
+                        <input type="hidden" id="permissionsRoleFormPermissionId">
                         <div class="col-12">
-                            <label for="basicInfoName" class="form-label">Nombre del Módulo</label>
-                            <input type="text" class="form-control" id="basicInfoName" required>
+                            <label id="permissionDetailsLabel" class="form-label fw-bold"></label>
                         </div>
-                        <div class="col-12">
-                            <label for="basicInfoDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="basicInfoDescription" rows="3"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label for="basicInfoStatu" class="form-label">Estado</label>
-                            <select class="form-select" id="basicInfoStatu">
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
-                                <option value="En Desarrollo">En Desarrollo</option>
-                                <option value="Suspendido">Suspendido</option>
-                            </select>
+                        <div class="col-12 permission-group">
+                            <h6>Permisos Específicos</h6>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="permissionsCanCreate">
+                                <label class="form-check-label permission-label can-create" for="permissionsCanCreate">Crear</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="permissionsCanRead">
+                                <label class="form-check-label permission-label can-read" for="permissionsCanRead">Leer</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="permissionsCanUpdate">
+                                <label class="form-check-label permission-label can-update" for="permissionsCanUpdate">Actualizar</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input permission-checkbox" id="permissionsCanDelete">
+                                <label class="form-check-label permission-label can-delete" for="permissionsCanDelete">Eliminar</label>
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveBasicInfoBtn">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" id="savePermissionsBtn">Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -273,6 +324,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/module.js"></script>
+    <script src="/Administrador/js/roleFormPermission.js"></script>
 </body>
 </html>

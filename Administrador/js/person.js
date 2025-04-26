@@ -16,7 +16,7 @@ const API_URL = 'https://localhost:7182/api/person';
         // Mostrar mensaje de estado
         function showMessage(message, type = 'info') {
             statusMessage.className = `alert alert-${type}`;
-            statusMessage.innerHTML = message;VVV
+            statusMessage.innerHTML = message;
             statusMessage.style.display = 'block';
             
             // Ocultar mensaje después de 5 segundos si no es un error

@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios</title>
+    <title>Gestión de Pagos de Usuarios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="/Administrador/css/paymentUser.css">
 </head>
 <body>
     <!-- Barra de navegación -->
+   <!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand" href="#">Sistema de Gestión</a>
@@ -93,23 +94,17 @@
 </nav>
 
     <div class="container">
-        <h1 class="mb-4">Gestión de Usuarios</h1>
+        <h1 class="mb-4">Gestión de Pagos de Usuarios</h1>
         
         <!-- Área de mensajes de estado -->
         <div id="statusMessage" style="display:none;"></div>
         
-        <!-- Notificación para cuando se redirige desde la página de personas -->
-        <div id="personNotification" class="alert alert-info" style="display:none;">
-            <i class="fas fa-info-circle"></i> 
-            <span id="personNotificationText">Persona seleccionada para registro de usuario.</span>
-        </div>
-        
-        <!-- Tabla de usuarios -->
+        <!-- Tabla de pagos -->
         <div class="card mb-5">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Lista de Usuarios</h3>
-                <button class="btn btn-primary" id="addUserBtn">
-                    <i class="fas fa-user-plus"></i> Nuevo Usuario
+                <h3 class="mb-0">Lista de Pagos</h3>
+                <button class="btn btn-primary" id="addPaymentBtn">
+                    <i class="fas fa-plus-circle"></i> Nuevo Pago
                 </button>
             </div>
             <div class="card-body">
@@ -118,17 +113,18 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nombre de Usuario</th>
-                                <th>Correo Electrónico</th>
-                                <th>ID Persona</th>
+                                <th>Persona</th>
+                                <th>Monto</th>
+                                <th>Fecha de Pago</th>
+                                <th>Tipo de Pago</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="userTableBody">
-                            <!-- Los datos de los usuarios se insertarán aquí -->
+                        <tbody id="paymentTableBody">
+                            <!-- Los datos de los pagos se insertarán aquí -->
                             <tr>
-                                <td colspan="6" class="text-center">Cargando datos...</td>
+                                <td colspan="7" class="text-center">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -147,118 +143,174 @@
         </div>
     </div>
 
-    <!-- Modal para añadir usuario -->
-    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <!-- Modal para añadir pago -->
+    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
+                    <h5 class="modal-title" id="addPaymentModalLabel">Registrar Nuevo Pago</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addUserForm" class="row g-3">
+                    <form id="addPaymentForm" class="row g-3">
                         <div class="col-12">
-                            <label for="username" class="form-label">Nombre de Usuario</label>
-                            <input type="text" class="form-control" id="username" required>
+                            <label for="personId" class="form-label">Persona</label>
+                            <select class="form-select" id="personId" required>
+                                <option value="">Seleccione una persona</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
                         </div>
                         <div class="col-12">
-                            <label for="email" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="email" required>
+                            <label for="amount" class="form-label">Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="amount" step="0.01" min="0" required>
+                            </div>
                         </div>
                         <div class="col-12">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" required>
+                            <label for="paymentDate" class="form-label">Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="paymentDate" required>
                         </div>
-                        <!-- Campo oculto para el ID de persona -->
-                        <input type="hidden" id="personId" value="0">
+                        <div class="col-12">
+                            <label for="typePaymentId" class="form-label">Tipo de Pago</label>
+                            <select class="form-select" id="typePaymentId">
+                                <option value="">Seleccione un tipo de pago</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="billId" class="form-label">Factura (opcional)</label>
+                            <select class="form-select" id="billId">
+                                <option value="">Seleccione una factura</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="paymentAgreementId" class="form-label">Acuerdo de Pago (opcional)</label>
+                            <select class="form-select" id="paymentAgreementId">
+                                <option value="">Seleccione un acuerdo</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="isActive" checked>
-                                <label class="form-check-label" for="isActive">Usuario Activo</label>
+                                <label class="form-check-label" for="isActive">Pago Activo</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveUserBtn">Guardar</button>
+                    <button type="button" class="btn btn-primary" id="savePaymentBtn">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para editar usuario -->
-    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <!-- Modal para editar pago -->
+    <div class="modal fade" id="editPaymentModal" tabindex="-1" aria-labelledby="editPaymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
+                    <h5 class="modal-title" id="editPaymentModalLabel">Editar Pago</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editUserForm" class="row g-3">
-                        <input type="hidden" id="editUserId">
+                    <form id="editPaymentForm" class="row g-3">
+                        <input type="hidden" id="editPaymentId">
                         <div class="col-12">
-                            <label for="editUsername" class="form-label">Nombre de Usuario</label>
-                            <input type="text" class="form-control" id="editUsername" required>
+                            <label for="editPersonId" class="form-label">Persona</label>
+                            <select class="form-select" id="editPersonId" required>
+                                <option value="">Seleccione una persona</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
                         </div>
                         <div class="col-12">
-                            <label for="editEmail" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="editEmail" required>
+                            <label for="editAmount" class="form-label">Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editAmount" step="0.01" min="0" required>
+                            </div>
                         </div>
                         <div class="col-12">
-                            <label for="editPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="editPassword" placeholder="Dejar en blanco para mantener la actual">
+                            <label for="editPaymentDate" class="form-label">Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="editPaymentDate" required>
                         </div>
-                        <!-- Campo oculto para el ID de persona -->
-                        <input type="hidden" id="editPersonId" value="0">
+                        <div class="col-12">
+                            <label for="editTypePaymentId" class="form-label">Tipo de Pago</label>
+                            <select class="form-select" id="editTypePaymentId">
+                                <option value="">Seleccione un tipo de pago</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editBillId" class="form-label">Factura (opcional)</label>
+                            <select class="form-select" id="editBillId">
+                                <option value="">Seleccione una factura</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editPaymentAgreementId" class="form-label">Acuerdo de Pago (opcional)</label>
+                            <select class="form-select" id="editPaymentAgreementId">
+                                <option value="">Seleccione un acuerdo</option>
+                                <!-- Se cargará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editCreatedAt" class="form-label">Fecha de Creación</label>
+                            <input type="text" class="form-control" id="editCreatedAt" readonly>
+                        </div>
                         <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="editIsActive">
-                                <label class="form-check-label" for="editIsActive">Usuario Activo</label>
+                                <label class="form-check-label" for="editIsActive">Pago Activo</label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="updateUserBtn">Actualizar</button>
+                    <button type="button" class="btn btn-primary" id="updatePaymentBtn">Actualizar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para actualizar credenciales -->
-    <div class="modal fade" id="credentialsModal" tabindex="-1" aria-labelledby="credentialsModalLabel" aria-hidden="true">
+    <!-- Modal para actualizar monto y fecha de pago -->
+    <div class="modal fade" id="updateAmountDateModal" tabindex="-1" aria-labelledby="updateAmountDateModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="credentialsModalLabel">Actualizar Credenciales</h5>
+                    <h5 class="modal-title" id="updateAmountDateModalLabel">Actualizar Monto y Fecha</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="fas fa-info-circle"></i> Actualice sólo las credenciales sin modificar otros datos del usuario.
+                        <i class="fas fa-info-circle"></i> Actualice solo el monto y la fecha de pago sin modificar otros atributos.
                     </div>
-                    <form id="credentialsForm" class="row g-3">
-                        <input type="hidden" id="credentialsUserId">
+                    <form id="updateAmountDateForm" class="row g-3">
+                        <input type="hidden" id="amountDatePaymentId">
                         <div class="col-12">
-                            <label for="credentialsUsername" class="form-label">Nombre de Usuario</label>
-                            <input type="text" class="form-control" id="credentialsUsername" required>
+                            <label id="updatePersonName" class="form-label fw-bold"></label>
                         </div>
                         <div class="col-12">
-                            <label for="credentialsEmail" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="credentialsEmail" required>
+                            <label for="updateAmount" class="form-label">Nuevo Monto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="updateAmount" step="0.01" min="0" required>
+                            </div>
                         </div>
                         <div class="col-12">
-                            <label for="credentialsPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="credentialsPassword" placeholder="Dejar en blanco si no desea cambiarla">
+                            <label for="updatePaymentDate" class="form-label">Nueva Fecha de Pago</label>
+                            <input type="datetime-local" class="form-control" id="updatePaymentDate" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveCredentialsBtn">Guardar Credenciales</button>
+                    <button type="button" class="btn btn-primary" id="saveAmountDateBtn">Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -266,6 +318,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/user.js"></script>
+    <script src="/Administrador/js/paymentUser.js"></script>
+       
 </body>
 </html>

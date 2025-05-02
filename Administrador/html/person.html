@@ -115,6 +115,8 @@
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Teléfono</th>
+                                <th>Number Document</th>
+                                <th>Type Document</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -168,6 +170,21 @@
                                 <input type="checkbox" class="form-check-input" id="isActive" checked>
                                 <label class="form-check-label" for="isActive">Persona Activa</label>
                             </div>
+                            <div class="col-12">
+                                <label for="documentNumber" class="form-label">Número de Documento</label>
+                                <input type="text" class="form-control" id="documentNumber" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="documentType" class="form-label">Tipo de Documento</label>
+                                <select class="form-select" id="documentType" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="CC">Cédula de Ciudadanía</option>
+                                    <option value="CE">Cédula de Extranjería</option>
+                                    <option value="TI">Tarjeta de Identidad</option>
+                                    <option value="PA">Pasaporte</option>
+                                </select>
+                            </div>
+                            
                         </div>
                     </form>
                 </div>
@@ -178,6 +195,32 @@
             </div>
         </div>
     </div>
+
+    <!-- Modifica la parte del navbar dentro del archivo HTML (paste-2.txt) -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">Sistema de Gestión</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Menús existentes (Usuarios, Roles, Módulos, etc.) -->
+                <!-- ... -->
+            </ul>
+            <!-- Agregar botón de cierre de sesión a la derecha -->
+            <div class="d-flex">
+                <span class="navbar-text me-3 d-none d-lg-block">
+                    <i class="fas fa-user-circle"></i> <span id="currentUserName">Usuario</span>
+                </span>
+                <button id="logoutBtn" class="btn btn-outline-danger">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
 
     <!-- Modal para editar persona -->
     <div class="modal fade" id="editPersonModal" tabindex="-1" aria-labelledby="editPersonModalLabel" aria-hidden="true">
@@ -203,6 +246,20 @@
                             <input type="text" class="form-control" id="editPhone" required>
                         </div>
                         <div class="col-12">
+                            <label for="editDocumentNumber" class="form-label">NumeroDeDocumento</label>
+                            <input type="text" class="form-control" id="editDocumentNumber" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="editDocumentType" class="form-label">TipoDeDocumento</label>
+                            <select class="form-select" id="editDocumentType" required>
+                                <option value="">Seleccione...</option>
+                                <option value="CC">Cédula de Ciudadanía</option>
+                                <option value="CE">Cédula de Extranjería</option>
+                                <option value="TI">Tarjeta de Identidad</option>
+                                <option value="PA">Pasaporte</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="editIsActive">
                                 <label class="form-check-label" for="editIsActive">Persona Activa</label>
@@ -221,5 +278,6 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Administrador/js/person.js"></script>
+   
 </body>
 </html>

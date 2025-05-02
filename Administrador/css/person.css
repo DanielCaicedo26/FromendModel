@@ -75,4 +75,48 @@ body {
         padding-left: 1.5rem;
         box-shadow: none;
     }
+
+    /* logout.css - Estilos para el botón de cierre de sesión */
+
+/* Estilo básico para el botón de logout */
+#logoutBtn {
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+#logoutBtn:hover {
+    background-color: #dc3545;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+}
+
+/* Estilo para el icono dentro del botón */
+#logoutBtn i {
+    margin-right: 5px;
+}
+
+/* Estilo para el nombre de usuario */
+.navbar-text {
+    color: #6f42c1;
+    font-weight: 500;
+}
+
+.navbar-text i {
+    color: #6f42c1;
+    margin-right: 5px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 992px) {
+    #logoutBtn {
+        margin-top: 10px;
+        width: 100%;
+    }
+    
+    .navbar-text {
+        margin-bottom: 10px;
+        display: block;
+    }
+}
 }

@@ -3,32 +3,585 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de Sesión y Registro</title>
-    <link rel="stylesheet" href="/inicio de sesion/css/inicio.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>ModelSecurityDa - Sistema de Autenticación</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --bg-color: #f1f5f9;
+            --text-color: #334155;
+            --border-color: #cbd5e1;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: 480px;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            padding: 20px;
+            text-align: center;
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background: white;
+        }
+        
+        .form-container {
+            padding: 24px;
+            position: relative;
+        }
+        
+        .form {
+            display: none;
+        }
+        
+        .form.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.3s;
+            color: var(--text-color);
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 14px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+        
+        .btn:disabled {
+            background: var(--secondary-color);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            margin-top: 12px;
+            font-size: 14px;
+            text-align: center;
+            min-height: 20px;
+            font-weight: 500;
+        }
+        
+        .success-message {
+            color: var(--success-color);
+            margin-top: 12px;
+            font-size: 14px;
+            text-align: center;
+            min-height: 20px;
+            font-weight: 500;
+        }
+        
+        .spinner {
+            display: none;
+            margin: 15px auto;
+            width: 30px;
+            height: 30px;
+            border: 4px solid rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease infinite;
+        }
+        
+        .form.loading .spinner {
+            display: block;
+        }
+        
+        .form.loading .btn {
+            background-color: var(--secondary-color);
+            pointer-events: none;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+            background: #f8fafc;
+        }
+        
+        .two-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsivo */
+        @media (max-width: 500px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .two-cols {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <div class="header">
+            <h1>ModelSecurityDa</h1>
+            <p>Sistema de gestión de seguridad y acceso</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" id="login-tab">Iniciar Sesión</div>
+            <div class="tab" id="register-tab">Registrarse</div>
+        </div>
+        
         <div class="form-container">
-            <form id="login-form">
-                <h2>Iniciar Sesión</h2>
-                <input type="email" placeholder="Correo Electrónico" required>
-                <input type="password" placeholder="Contraseña" required>
-                <button type="submit">Iniciar Sesión</button>
-                <p>¿No tienes una cuenta? <a href="#" id="show-register">Regístrate aquí</a></p>
-            </form>
-
-            <form id="register-form" style="display: none;">
-                <h2>Registro</h2>
-                <input type="text" placeholder="Nombre de Usuario" required>
-                <input type="email" placeholder="Correo Electrónico" required>
-                <input type="password" placeholder="Contraseña" required>
-                <button type="submit">Registrarse</button>
-                <p>¿Ya tienes una cuenta? <a href="#" id="show-login">Inicia Sesión aquí</a></p>
-            </form>
+            <!-- Formulario de inicio de sesión -->
+            <div class="form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Usuario</label>
+                    <input type="text" id="login-username" placeholder="Ingrese su nombre de usuario">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" placeholder="Ingrese su contraseña">
+                </div>
+                <button class="btn" id="login-button">Iniciar Sesión</button>
+                <div class="spinner" id="login-spinner"></div>
+                <div class="error-message" id="login-error"></div>
+                <div class="success-message" id="login-success"></div>
+            </div>
+            
+            <!-- Formulario de registro -->
+            <div class="form" id="register-form">
+                <div class="two-cols">
+                    <div class="form-group">
+                        <label for="firstName">Nombre</label>
+                        <input type="text" id="firstName" placeholder="Ingrese su nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Apellido</label>
+                        <input type="text" id="lastName" placeholder="Ingrese su apellido">
+                    </div>
+                </div>
+                
+                <div class="two-cols">
+                    <div class="form-group">
+                        <label for="documentType">Tipo de Documento</label>
+                        <input type="text" id="documentType" placeholder="Ej: CC, TI, CE">
+                    </div>
+                    <div class="form-group">
+                        <label for="documentNumber">Número de Documento</label>
+                        <input type="text" id="documentNumber" placeholder="Ingrese su documento">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Teléfono (Opcional)</label>
+                    <input type="text" id="phone" placeholder="Ingrese su teléfono">
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-username">Nombre de Usuario</label>
+                    <input type="text" id="register-username" placeholder="Elija un nombre de usuario">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" placeholder="Ingrese su correo electrónico">
+                </div>
+                
+                <div class="two-cols">
+                    <div class="form-group">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" id="register-password" placeholder="Elija una contraseña">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar Contraseña</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirme su contraseña">
+                    </div>
+                </div>
+                
+                <button class="btn" id="register-button">Crear Cuenta</button>
+                <div class="spinner" id="register-spinner"></div>
+                <div class="error-message" id="register-error"></div>
+                <div class="success-message" id="register-success"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            &copy; 2025 ModelSecurityDa - Todos los derechos reservados
         </div>
     </div>
 
-    <script src="/inicio de sesion/js/inicio.js"></script>
+    <script>
+        // Configuración de la API
+        const API_BASE_URL = 'https://localhost:7182/api';
+        const AUTH_URL = `${API_BASE_URL}/Auth`;
+        const USER_URL = `${API_BASE_URL}/User`;
+        const PERSON_URL = `${API_BASE_URL}/Person`;
+        
+        // Claves para almacenamiento local
+        const TOKEN_KEY = 'jwt_token';
+        const USER_DATA_KEY = 'user_data';
+        
+        // Referencias a elementos del DOM
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        // Elementos del formulario de login
+        const loginButton = document.getElementById('login-button');
+        const loginUsername = document.getElementById('login-username');
+        const loginPassword = document.getElementById('login-password');
+        const loginError = document.getElementById('login-error');
+        const loginSuccess = document.getElementById('login-success');
+        
+        // Elementos del formulario de registro
+        const registerButton = document.getElementById('register-button');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const documentType = document.getElementById('documentType');
+        const documentNumber = document.getElementById('documentNumber');
+        const phone = document.getElementById('phone');
+        const registerUsername = document.getElementById('register-username');
+        const email = document.getElementById('email');
+        const registerPassword = document.getElementById('register-password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const registerError = document.getElementById('register-error');
+        const registerSuccess = document.getElementById('register-success');
+        
+        // Cambiar entre pestañas
+        loginTab.addEventListener('click', function() {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.add('active');
+            registerForm.classList.remove('active');
+            // Limpiar mensajes al cambiar de pestaña
+            clearMessages();
+        });
+        
+        registerTab.addEventListener('click', function() {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.add('active');
+            loginForm.classList.remove('active');
+            // Limpiar mensajes al cambiar de pestaña
+            clearMessages();
+        });
+        
+        // Limpiar mensajes de error y éxito
+        function clearMessages() {
+            loginError.textContent = '';
+            loginSuccess.textContent = '';
+            registerError.textContent = '';
+            registerSuccess.textContent = '';
+        }
+        
+        // Verificar si el usuario ya está autenticado
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem(TOKEN_KEY);
+            if (token) {
+                validateToken(token).then(isValid => {
+                    if (isValid) {
+                        window.location.href = '/Administrador/html/person.html';
+                    } else {
+                        localStorage.removeItem(TOKEN_KEY);
+                        localStorage.removeItem(USER_DATA_KEY);
+                    }
+                });
+            }
+        });
+        
+        // Función para validar el token JWT
+        async function validateToken(token) {
+            try {
+                const response = await fetch(`${AUTH_URL}/validate`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('Error al validar token:', error);
+                return false;
+            }
+        }
+        
+        // Manejar el inicio de sesión
+        loginButton.addEventListener('click', async function() {
+            // Limpiar mensajes previos
+            loginError.textContent = '';
+            loginSuccess.textContent = '';
+            
+            // Validar campos
+            if (!loginUsername.value || !loginPassword.value) {
+                loginError.textContent = 'Por favor ingrese usuario y contraseña';
+                return;
+            }
+            
+            // Mostrar estado de carga
+            loginForm.classList.add('loading');
+            loginButton.disabled = true;
+            
+            try {
+                const response = await fetch(`${AUTH_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: loginUsername.value,
+                        password: loginPassword.value
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Credenciales incorrectas');
+                }
+                
+                const data = await response.json();
+                
+                // Verificar que se recibió un token
+                if (!data.token) {
+                    throw new Error('No se recibió un token de autenticación válido');
+                }
+                
+                // Guardar token y datos del usuario
+                localStorage.setItem(TOKEN_KEY, data.token);
+                localStorage.setItem(USER_DATA_KEY, JSON.stringify(data.user));
+                
+                loginSuccess.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
+                
+                // Redirigir al dashboard
+                setTimeout(() => {
+                    window.location.href = 'Administrador/html/person.html';
+                }, 1500);
+                
+            } catch (error) {
+                loginError.textContent = error.message || 'Error al iniciar sesión. Intente nuevamente.';
+            } finally {
+                loginForm.classList.remove('loading');
+                loginButton.disabled = false;
+            }
+        });
+        
+        // Función para manejar errores de la API
+        async function handleApiError(response) {
+            if (!response.ok) {
+                try {
+                    const errorData = await response.json();
+                    return errorData.message || 'Error del servidor';
+                } catch (error) {
+                    return response.statusText || 'Error desconocido';
+                }
+            }
+            return null;
+        }
+        
+        // Manejar el registro de usuario
+        registerButton.addEventListener('click', async function() {
+            // Limpiar mensajes previos
+            registerError.textContent = '';
+            registerSuccess.textContent = '';
+            
+            // Validar campos obligatorios
+            if (!firstName.value || !lastName.value || !documentNumber.value || 
+                !registerUsername.value || !email.value || !registerPassword.value) {
+                registerError.textContent = 'Por favor complete todos los campos obligatorios';
+                return;
+            }
+            
+            // Validar que las contraseñas coincidan
+            if (registerPassword.value !== confirmPassword.value) {
+                registerError.textContent = 'Las contraseñas no coinciden';
+                return;
+            }
+            
+            // Validar longitud de contraseña
+            if (registerPassword.value.length < 6) {
+                registerError.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                return;
+            }
+            
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                registerError.textContent = 'Por favor ingrese un correo electrónico válido';
+                return;
+            }
+            
+            // Mostrar estado de carga
+            registerForm.classList.add('loading');
+            registerButton.disabled = true;
+            
+            try {
+                // Datos de registro
+                const registerData = {
+                    username: registerUsername.value,
+                    email: email.value,
+                    password: registerPassword.value,
+                    confirmPassword: confirmPassword.value,
+                    firstName: firstName.value,
+                    lastName: lastName.value,
+                    documentType: documentType.value || 'CC',
+                    documentNumber: documentNumber.value,
+                    phone: phone.value || ''
+                };
+                
+                // Llamar al endpoint de registro
+                const response = await fetch(`${AUTH_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(registerData)
+                });
+                
+                // Verificar respuesta
+                if (!response.ok) {
+                    const errorMessage = await handleApiError(response);
+                    throw new Error(errorMessage);
+                }
+                
+                // Registro exitoso
+                registerSuccess.textContent = 'Registro exitoso. Ya puede iniciar sesión';
+                
+                // Limpiar el formulario
+                document.getElementById('register-form').reset();
+                
+                // Cambiar a la pestaña de login después de un momento
+                setTimeout(() => {
+                    loginTab.click();
+                }, 2000);
+                
+            } catch (error) {
+                registerError.textContent = error.message || 'Error al registrarse. Intente nuevamente.';
+            } finally {
+                registerForm.classList.remove('loading');
+                registerButton.disabled = false;
+            }
+        });
+        
+        // Enviar formulario con Enter
+        loginPassword.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginButton.click();
+            }
+        });
+        
+        confirmPassword.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                registerButton.click();
+            }
+        });
+    </script>
 </body>
 </html>

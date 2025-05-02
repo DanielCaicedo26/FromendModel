@@ -469,7 +469,7 @@ function handleLogoutSuccess() {
     
     // Redirigir al login después de un breve retraso
     setTimeout(() => {
-        window.location.href = '/inico.html';
+        window.location.href = 'http://127.0.0.1:5501/Administrador/html/inico.html';
     }, 1500);
 }
 

@@ -81,7 +81,7 @@ function handleLogoutSuccess() {
     
     // Redirigir al login después de un breve retraso
     setTimeout(() => {
-        window.location.href = '/index.html';
+        window.location.href = 'inico.html';
     }, 1500);
 }
 
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) {
         // Si no hay token, redirigir al login
-        window.location.href = 'http://127.0.0.1:5501/Administrador/html/inico.html';
+        window.location.href = 'inico.html';
         return;
     }
     

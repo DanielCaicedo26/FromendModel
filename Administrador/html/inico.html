@@ -389,7 +389,7 @@
             if (token) {
                 validateToken(token).then(isValid => {
                     if (isValid) {
-                        window.location.href = 'Administrador/html/person.html';
+                        window.location.href = 'person.html';
                     } else {
                         localStorage.removeItem(TOKEN_KEY);
                         localStorage.removeItem(USER_DATA_KEY);
@@ -462,7 +462,7 @@
                 
                 // Redirigir al dashboard
                 setTimeout(() => {
-                    window.location.href = 'Administrador/html/person.html';
+                    window.location.href = 'person.html';
                 }, 1500);
                 
             } catch (error) {

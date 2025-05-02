@@ -469,7 +469,7 @@ function handleLogoutSuccess() {
     
     // Redirigir al login después de un breve retraso
     setTimeout(() => {
-        window.location.href = '/login.html';
+        window.location.href = '/inico.html';
     }, 1500);
 }
 

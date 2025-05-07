@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Usuario - Sistema de Multas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .dashboard {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .card h3 {
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+        
+        .card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .card .status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .infraction-list {
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .list-header {
+            display: flex;
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+            padding: 15px;
+        }
+        
+        .list-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .list-item {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .list-item:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .col {
+            flex: 1;
+        }
+        
+        .col:nth-child(1) { flex: 0.5; }
+        .col:nth-child(2) { flex: 2; }
+        
+        .filter-bar {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .filter-options {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .filter-btn {
+            background-color: #ecf0f1;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .filter-btn.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .search-box {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 200px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .status-paid {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .status-overdue {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .payment-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .payment-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .details-btn {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* Estilo para el modal de cierre de sesión */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .modal-title {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .modal-btn-cancel {
+            background-color: #7f8c8d;
+            color: white;
+        }
+        
+        .modal-btn-confirm {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        /* Animación de carga */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Alerta de estado */
+        .status-message {
+            display: none;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>Panel de Usuario</h1>
+                <div class="user-info">
+                    <div class="user-avatar">JD</div>
+                    <span id="currentUserName">Juan Delgado</span>
+                </div>
+                <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Mensaje de estado -->
+        <div id="statusMessage" class="status-message"></div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h3>Multas Pendientes</h3>
+                <div class="value">3</div>
+                <div class="status">2 próximas a vencer</div>
+            </div>
+            <div class="card">
+                <h3>Monto Total a Pagar</h3>
+                <div class="value">$520.000</div>
+                <div class="status">Incluye recargos por mora</div>
+            </div>
+            <div class="card">
+                <h3>Multas Pagadas</h3>
+                <div class="value">4</div>
+                <div class="status">En los últimos 12 meses</div>
+            </div>
+        </div>
+        
+        <div class="filter-bar">
+            <div class="filter-options">
+                <button class="filter-btn active">Todas</button>
+                <button class="filter-btn">Pendientes</button>
+                <button class="filter-btn">Pagadas</button>
+                <button class="filter-btn">Vencidas</button>
+            </div>
+            <input type="text" class="search-box" placeholder="Buscar multa...">
+        </div>
+        
+        <div class="infraction-list">
+            <div class="list-header">
+                <div class="col">#</div>
+                <div class="col">Fecha</div>
+                <div class="col">Tipo de Infracción</div>
+                <div class="col">Valor</div>
+                <div class="col">Estado</div>
+                <div class="col">Acciones</div>
+            </div>
+            <div class="list-content">
+                <div class="list-item">
+                    <div class="col">1</div>
+                    <div class="col">15/04/2025</div>
+                    <div class="col">Exceso de velocidad en zona escolar</div>
+                    <div class="col">$180.000</div>
+                    <div class="col"><span class="status-badge status-pending">Pendiente</span></div>
+                    <div class="col">
+                        <button class="payment-btn">Pagar</button>
+                        <button class="details-btn">Detalles</button>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="col">2</div>
+                    <div class="col">02/03/2025</div>
+                    <div class="col">Estacionamiento en zona prohibida</div>
+                    <div class="col">$90.000</div>
+                    <div class="col"><span class="status-badge status-overdue">Vencida</span></div>
+                    <div class="col">
+                        <button class="payment-btn">Pagar</button>
+                        <button class="details-btn">Detalles</button>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="col">3</div>
+                    <div class="col">25/02/2025</div>
+                    <div class="col">Semáforo en rojo</div>
+                    <div class="col">$250.000</div>
+                    <div class="col"><span class="status-badge status-pending">Pendiente</span></div>
+                    <div class="col">
+                        <button class="payment-btn">Pagar</button>
+                        <button class="details-btn">Detalles</button>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="col">4</div>
+                    <div class="col">18/01/2025</div>
+                    <div class="col">Conducir sin licencia</div>
+                    <div class="col">$350.000</div>
+                    <div class="col"><span class="status-badge status-paid">Pagada</span></div>
+                    <div class="col">
+                        <button class="payment-btn" disabled>Pagar</button>
+                        <button class="details-btn">Detalles</button>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="col">5</div>
+                    <div class="col">05/12/2024</div>
+                    <div class="col">Cinturón de seguridad</div>
+                    <div class="col">$120.000</div>
+                    <div class="col"><span class="status-badge status-paid">Pagada</span></div>
+                    <div class="col">
+                        <button class="payment-btn" disabled>Pagar</button>
+                        <button class="details-btn">Detalles</button>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="col">6</div>
+                    <div class="col">22/11/2024</div>
+                    <div class="col">Estacionamiento en zona de carga</div>
+                    <div class="col">$80.000</div>
+                    <div class="col"><span class="status-badge status-paid">Pagada</span></div>
+                    <div class="col">
+                        <button class="payment-btn" disabled>Pagar</button>
+                        <button class="details-btn">Detalles</button>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="col">7</div>
+                    <div class="col">10/10/2024</div>
+                    <div class="col">Uso de celular mientras conduce</div>
+                    <div class="col">$160.000</div>
+                    <div class="col"><span class="status-badge status-paid">Pagada</span></div>
+                    <div class="col">
+                        <button class="payment-btn" disabled>Pagar</button>
+                        <button class="details-btn">Detalles</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmación de cierre de sesión -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Cerrar Sesión</h2>
+            <p>¿Está seguro que desea cerrar sesión?</p>
+            <div id="logoutSpinner" class="spinner"></div>
+            <div class="modal-buttons">
+                <button id="cancelLogout" class="modal-btn modal-btn-cancel">Cancelar</button>
+                <button id="confirmLogout" class="modal-btn modal-btn-confirm">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Obtener referencias a elementos del DOM
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const cancelLogout = document.getElementById('cancelLogout');
+        const confirmLogout = document.getElementById('confirmLogout');
+        const logoutSpinner = document.getElementById('logoutSpinner');
+        const statusMessage = document.getElementById('statusMessage');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const paymentBtns = document.querySelectorAll('.payment-btn:not([disabled])');
+        const detailsBtns = document.querySelectorAll('.details-btn');
+        const currentUserName = document.getElementById('currentUserName');
+        
+        // Claves para el almacenamiento local
+        const TOKEN_KEY = 'jwt_token';
+        const USER_DATA_KEY = 'user_data';
+        const IS_ADMIN_KEY = 'is_admin';
+        
+        // Verificar sesión al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si hay un token almacenado
+            const token = localStorage.getItem(TOKEN_KEY);
+            if (!token) {
+                // Si no hay token, redirigir a la página de inicio de sesión
+                window.location.href = 'inico.html';
+                return;
+            }
+            
+            // Mostrar nombre de usuario desde localStorage
+            const userData = localStorage.getItem(USER_DATA_KEY);
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    if (user.username) {
+                        currentUserName.textContent = user.username;
+                        
+                        // Actualizar el avatar con las iniciales
+                        const userAvatar = document.querySelector('.user-avatar');
+                        if (userAvatar && user.firstName && user.lastName) {
+                            const initials = user.firstName.charAt(0) + user.lastName.charAt(0);
+                            userAvatar.textContent = initials.toUpperCase();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al parsear datos de usuario:', error);
+                }
+            }
+        });
+        
+        // Mostrar modal de cierre de sesión
+        logoutBtn.addEventListener('click', function() {
+            logoutModal.style.display = 'flex';
+        });
+        
+        // Cancelar cierre de sesión
+        cancelLogout.addEventListener('click', function() {
+            logoutModal.style.display = 'none';
+        });
+        
+        // Cerrar modal al hacer clic fuera del contenido
+        logoutModal.addEventListener('click', function(event) {
+            if (event.target === logoutModal) {
+                logoutModal.style.display = 'none';
+            }
+        });
+        
+        // Confirmar cierre de sesión
+        confirmLogout.addEventListener('click', function() {
+            // Mostrar spinner de carga
+            logoutSpinner.style.display = 'block';
+            confirmLogout.disabled = true;
+            cancelLogout.disabled = true;
+            
+            // Obtener el token de autenticación
+            const token = localStorage.getItem(TOKEN_KEY);
+            
+            // Simular una llamada a la API para cerrar sesión
+            setTimeout(function() {
+                // Limpiar el almacenamiento local
+                localStorage.removeItem(TOKEN_KEY);
+                localStorage.removeItem(USER_DATA_KEY);
+                localStorage.removeItem(IS_ADMIN_KEY);
+                
+                // Redireccionar a la página de inicio de sesión
+                window.location.href = 'inico.html';
+            }, 1000); // Simular un retraso de 1 segundo para la llamada a la API
+        });
+        
+        // Manejar los filtros
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Quitar la clase active de todos los botones
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Añadir la clase active al botón clickeado
+                this.classList.add('active');
+                
+                // Aquí iría la lógica para filtrar los resultados
+                console.log('Filtrar por:', this.textContent);
+            });
+        });
+        
+        // Manejar los botones de pago
+        paymentBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const listItem = this.closest('.list-item');
+                const infractionNumber = listItem.querySelector('.col:first-child').textContent;
+                alert(`Redirigiendo al sistema de pago para la infracción #${infractionNumber}`);
+            });
+        });
+        
+        // Manejar los botones de detalles
+        detailsBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const listItem = this.closest('.list-item');
+                const infractionNumber = listItem.querySelector('.col:first-child').textContent;
+                const infractionType = listItem.querySelector('.col:nth-child(3)').textContent;
+                alert(`Detalles de la infracción #${infractionNumber}: ${infractionType}`);
+            });
+        });
+        
+        // Función para mostrar mensajes de estado
+        function showStatusMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message';
+            statusMessage.classList.add(`alert-${type}`);
+            statusMessage.style.display = 'block';
+            
+            // Ocultar mensaje después de 5 segundos
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (isAdmin) {
                     window.location.href = 'person.html';
                 } else {
-                    window.location.href = 'rol.html';
+                    window.location.href = 'usuario.html';
                 }
             } else {
                 localStorage.removeItem(TOKEN_KEY);

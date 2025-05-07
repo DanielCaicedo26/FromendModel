@@ -1,17 +1,10 @@
 // auth.js - Manejo centralizado de autenticación
 
-// Configuración de la API
-const API_BASE_URL = 'https://localhost:7182/api';
-const AUTH_URL = `${API_BASE_URL}/Auth`;
-
-// Claves consistentes para almacenamiento local
-const TOKEN_KEY = 'jwt_token';
-const USER_DATA_KEY = 'user_data';
-
 // Función para verificar sesión en cada página
 function checkSession() {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = localStorage.getItem(API_CONFIG.TOKEN_KEY);
     const currentPage = window.location.pathname;
+    const isAdmin = localStorage.getItem(API_CONFIG.IS_ADMIN_KEY) === 'true';
     
     // Si estamos en la página de login, no hacer nada
     if (currentPage.includes('inico.html')) {
@@ -24,13 +17,26 @@ function checkSession() {
         return;
     }
     
+    // Verificar acceso basado en rol
+    if (currentPage.includes('/admin/') && !isAdmin) {
+        // Si intenta acceder a una página de admin sin ser admin, redirigir
+        window.location.href = '/user/dashboard.html';
+        return;
+    }
+    
+    if (currentPage.includes('/user/') && isAdmin) {
+        // Si un admin accede a una página de usuario regular, redirigir (opcional)
+        // window.location.href = '/admin/dashboard.html';
+        // return;
+    }
+    
     // Mostrar información del usuario si hay token
     displayUserInfo();
 }
 
 // Función para obtener datos del usuario
 function getUserData() {
-    const userData = localStorage.getItem(USER_DATA_KEY);
+    const userData = localStorage.getItem(API_CONFIG.USER_DATA_KEY); // Corregido
     if (userData) {
         return JSON.parse(userData);
     }
@@ -61,11 +67,11 @@ function logout() {
             }
             
             // Obtener el token
-            const token = localStorage.getItem(TOKEN_KEY);
+            const token = localStorage.getItem(API_CONFIG.TOKEN_KEY); // Corregido
             
             // Llamar al endpoint de logout (si existe)
             if (token) {
-                fetch(`${AUTH_URL}/logout`, {
+                fetch(`${API_CONFIG.AUTH_URL}/logout`, { // Corregido
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -75,14 +81,16 @@ function logout() {
                     console.error('Error durante el logout:', error);
                 }).finally(() => {
                     // Siempre limpiar localStorage y redirigir
-                    localStorage.removeItem(TOKEN_KEY);
-                    localStorage.removeItem(USER_DATA_KEY);
+                    localStorage.removeItem(API_CONFIG.TOKEN_KEY); // Corregido
+                    localStorage.removeItem(API_CONFIG.USER_DATA_KEY); // Corregido
+                    localStorage.removeItem(API_CONFIG.IS_ADMIN_KEY); // Corregido
                     window.location.href = 'inico.html';
                 });
             } else {
                 // Si no hay token, simplemente redirigir
-                localStorage.removeItem(TOKEN_KEY);
-                localStorage.removeItem(USER_DATA_KEY);
+                localStorage.removeItem(API_CONFIG.TOKEN_KEY); // Corregido
+                localStorage.removeItem(API_CONFIG.USER_DATA_KEY); // Corregido
+                localStorage.removeItem(API_CONFIG.IS_ADMIN_KEY); // Corregido
                 window.location.href = 'inico.html';
             }
         });

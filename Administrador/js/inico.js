@@ -7,6 +7,7 @@ const PERSON_URL = `${API_BASE_URL}/Person`;
 // Claves para almacenamiento local
 const TOKEN_KEY = 'jwt_token';
 const USER_DATA_KEY = 'user_data';
+const IS_ADMIN_KEY = 'is_admin'; // Clave para guardar si el usuario es administrador
 
 // Referencias a elementos del DOM
 const loginTab = document.getElementById('login-tab');
@@ -34,6 +35,13 @@ const registerPassword = document.getElementById('register-password');
 const confirmPassword = document.getElementById('confirmPassword');
 const registerError = document.getElementById('register-error');
 const registerSuccess = document.getElementById('register-success');
+
+// Función para limpiar datos de autenticación
+function clearAllStoredData() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
+    localStorage.removeItem(IS_ADMIN_KEY);
+}
 
 // Cambiar entre pestañas
 loginTab.addEventListener('click', function() {
@@ -64,14 +72,24 @@ function clearMessages() {
 
 // Verificar si el usuario ya está autenticado
 document.addEventListener('DOMContentLoaded', function() {
+    // Limpiar datos antiguos al cargar la página
+    clearAllStoredData();
+    
     const token = localStorage.getItem(TOKEN_KEY);
     if (token) {
         validateToken(token).then(isValid => {
             if (isValid) {
-                window.location.href = 'person.html';
+                // Verificar el rol para redirigir a la página correcta
+                const isAdmin = localStorage.getItem(IS_ADMIN_KEY) === 'true';
+                if (isAdmin) {
+                    window.location.href = 'person.html';
+                } else {
+                    window.location.href = 'rol.html';
+                }
             } else {
                 localStorage.removeItem(TOKEN_KEY);
                 localStorage.removeItem(USER_DATA_KEY);
+                localStorage.removeItem(IS_ADMIN_KEY);
             }
         });
     }
@@ -133,16 +151,40 @@ loginButton.addEventListener('click', async function() {
             throw new Error('No se recibió un token de autenticación válido');
         }
         
+        // Depuración - mostrar información en la consola
+        console.log('Respuesta de autenticación:', data);
+        if (data.user && data.user.roles) {
+            console.log('Roles del usuario:', data.user.roles);
+        }
+        
         // Guardar token y datos del usuario
         localStorage.setItem(TOKEN_KEY, data.token);
         localStorage.setItem(USER_DATA_KEY, JSON.stringify(data.user));
         
-        loginSuccess.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
-        
-        // Redirigir al dashboard
-        setTimeout(() => {
-            window.location.href = 'person.html';
-        }, 1500);
+        // Verificar información de redirección
+        if (data.roleRedirection) {
+            console.log('Información de redirección:', data.roleRedirection);
+            console.log('Es administrador:', data.roleRedirection.isAdmin);
+            console.log('URL de redirección:', data.roleRedirection.redirectUrl);
+            
+            // Guardar información de si es admin
+            localStorage.setItem(IS_ADMIN_KEY, data.roleRedirection.isAdmin.toString());
+            
+            loginSuccess.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
+            
+            // Redirigir según el rol
+            setTimeout(() => {
+                window.location.href = data.roleRedirection.redirectUrl;
+            }, 1500);
+        } else {
+            // Si no hay información de redirección, usar comportamiento anterior
+            loginSuccess.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
+            
+            // Redirigir a la página por defecto
+            setTimeout(() => {
+                window.location.href = 'person.html';
+            }, 1500);
+        }
         
     } catch (error) {
         loginError.textContent = error.message || 'Error al iniciar sesión. Intente nuevamente.';
